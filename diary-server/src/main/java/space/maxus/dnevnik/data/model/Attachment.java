@@ -9,7 +9,8 @@ import lombok.*;
 @Data @NoArgsConstructor(force = true) @RequiredArgsConstructor @AllArgsConstructor
 public class Attachment {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "attachments_id_seq")
+    @Column(name = "id", unique = true, nullable = false)
     private Long id;
 
     private final String fileName;

@@ -7,11 +7,10 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "students")
-@Data @NoArgsConstructor(force = true) @RequiredArgsConstructor @AllArgsConstructor
+@Data @NoArgsConstructor(force = true) @AllArgsConstructor @RequiredArgsConstructor
 public class Student {
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
     private final String name;
     private final String surname;

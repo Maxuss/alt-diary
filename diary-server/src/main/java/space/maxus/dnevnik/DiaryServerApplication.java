@@ -3,9 +3,11 @@ package space.maxus.dnevnik;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import space.maxus.dnevnik.data.model.Subject;
+import space.maxus.dnevnik.data.model.Group;
+import space.maxus.dnevnik.data.model.Student;
 import space.maxus.dnevnik.data.model.Teacher;
-import space.maxus.dnevnik.data.service.SubjectService;
+import space.maxus.dnevnik.data.service.GroupService;
+import space.maxus.dnevnik.data.service.StudentService;
 import space.maxus.dnevnik.data.service.TeacherService;
 
 import java.util.UUID;
@@ -15,30 +17,27 @@ import java.util.stream.Stream;
 @Log4j2
 public class DiaryServerApplication {
 	private static TeacherService teacherService;
-	private static SubjectService subjectService;
+	private static StudentService studentService;
+	private static GroupService groupService;
 
-	public DiaryServerApplication(TeacherService teacherService, SubjectService subjectService) {
+	public DiaryServerApplication(TeacherService teacherService, StudentService studentService, GroupService groupService) {
 		DiaryServerApplication.teacherService = teacherService;
-		DiaryServerApplication.subjectService = subjectService;
+		DiaryServerApplication.studentService = studentService;
+		DiaryServerApplication.groupService = groupService;
 	}
 
 	public static void main(String[] args) {
 		SpringApplication.run(DiaryServerApplication.class, args);
 
-		var teacher1 = new Teacher(UUID.randomUUID(), "Name 1", "Surname 1", "Patr. 1", "email 1", "<>");
-		var teacher2 = new Teacher(UUID.randomUUID(), "Name 2", "Surname 2", "Patr. 2", "email 2", "<>");
-		var subject1 = new Subject("Subject 1", Stream.of(teacher1, teacher2).map(Teacher::getId).toList());
-		var subject2 = new Subject("Subject 2", Stream.of(teacher1).map(Teacher::getId).toList());
-		var subject3 = new Subject("Subject 3", Stream.of(teacher2).map(Teacher::getId).toList());
 
-		log.error(subject1);
+		var teacher1 = new Teacher("Teacher Name", "Teacher Surname", "Patr.", "email 1", "<>");
+		var student1 = new Student("Name 1", "Surname 1", "email 1", "<>");
+		var student2 = new Student("Name 2", "Surname 2", "email 2", "<>");
+		var group = new Group("Test Group", teacher1, Stream.of(student1, student2).map(Student::getId).toList().toArray(new UUID[0]));
 
 		teacherService.insertUpdate(teacher1);
-		teacherService.insertUpdate(teacher2);
-
-		subjectService.insertUpdate(subject1);
-		subjectService.insertUpdate(subject2);
-		subjectService.insertUpdate(subject3);
+		studentService.insertUpdate(student1);
+		studentService.insertUpdate(student2);
+		groupService.insertUpdate(group);
 	}
-
 }

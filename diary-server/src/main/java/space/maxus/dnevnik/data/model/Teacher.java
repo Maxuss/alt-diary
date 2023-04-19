@@ -1,33 +1,28 @@
 package space.maxus.dnevnik.data.model;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @Entity
 @Table(name = "teachers")
-@Data @AllArgsConstructor
+@Data @NoArgsConstructor(force = true) @AllArgsConstructor @RequiredArgsConstructor
+@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "$id")
 public class Teacher {
 
     @Id
-    private UUID id;
+    private UUID id = UUID.randomUUID();
 
-    private String name;
-    private String surname;
-    private String patronymic;
-    private String email;
-    private String passHash;
+    private final String name;
+    private final String surname;
+    private final String patronymic;
+    private final String email;
+    private final String passHash;
 
-    public Teacher(String name, String surname, String patronymic, String email, String passHash) {
-        this.name = name;
-        this.surname = surname;
-        this.patronymic = patronymic;
-        this.email = email;
-        this.passHash = passHash;
-    }
-
-    public Teacher() {
-
-    }
+    @OneToMany(mappedBy = "leaderTeacher")
+    private List<Group> groups;
 }
