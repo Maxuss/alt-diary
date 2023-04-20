@@ -1,34 +1,27 @@
 package space.maxus.dnevnik.controllers.response;
 
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import lombok.Data;
 import org.jetbrains.annotations.Nullable;
 
-@JsonInclude(value = JsonInclude.Include.NON_NULL)
-public class QueryResponse<A, B> {
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class QueryResponse<R> {
     @JsonUnwrapped
-    private @Nullable Successful<A> valueA = null;
+    private @Nullable Successful<R> response = null;
     @JsonUnwrapped
-    private @Nullable Successful<B> valueB = null;
-    @JsonUnwrapped
-    private @Nullable Neither neither = null;
+    private @Nullable None none = null;
 
-    public static <V1, V2> QueryResponse<V1, V2> left(V1 value) {
-        var response = new QueryResponse<V1, V2>();
-        response.valueA = new Successful<>(value);
+    public static <V> QueryResponse<V> success(V value) {
+        var response = new QueryResponse<V>();
+        response.response = new Successful<>(value);
         return response;
     }
 
-    public static <V1, V2> QueryResponse<V1, V2> right(V2 value) {
-        var response = new QueryResponse<V1, V2>();
-        response.valueB = new Successful<>(value);
-        return response;
-    }
-
-    public static <V1, V2> QueryResponse<V1, V2> neither(String message) {
-        var response = new QueryResponse<V1, V2>();
-        response.neither = new Neither(message);
+    public static <V> QueryResponse<V> failure(String message) {
+        var response = new QueryResponse<V>();
+        response.none = new None(message);
         return response;
     }
 
@@ -40,7 +33,7 @@ public class QueryResponse<A, B> {
     }
 
     @Data
-    public static class Neither {
+    public static class None {
         private boolean success = false;
         private final String message;
     }
