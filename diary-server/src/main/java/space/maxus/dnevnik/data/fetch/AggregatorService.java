@@ -3,18 +3,24 @@ package space.maxus.dnevnik.data.fetch;
 import lombok.Getter;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
-import space.maxus.dnevnik.data.service.StudentService;
-import space.maxus.dnevnik.data.service.TeacherService;
+import space.maxus.dnevnik.data.service.*;
 
 @Service @Getter
 public class AggregatorService implements InitializingBean {
     public static AggregatorService INSTANCE = null;
+
     private final TeacherService teacherService;
     private final StudentService studentService;
+    private final AttachmentService attachmentService;
+    private final HomeworkService homeworkService;
+    private final SubjectService subjectService;
 
-    public AggregatorService(TeacherService teacherService, StudentService studentService) {
+    public AggregatorService(TeacherService teacherService, StudentService studentService, AttachmentService attachmentService, HomeworkService homeworkService, SubjectService subjectService) {
         this.teacherService = teacherService;
         this.studentService = studentService;
+        this.attachmentService = attachmentService;
+        this.homeworkService = homeworkService;
+        this.subjectService = subjectService;
     }
 
     @Override

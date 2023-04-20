@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.hibernate.annotations.Type;
-import space.maxus.dnevnik.data.cascade.CascadingSubject;
+import space.maxus.dnevnik.controllers.response.ResponseSubject;
 import space.maxus.dnevnik.data.fetch.AggregatorService;
 import space.maxus.dnevnik.data.hibernate.UUIDArrayType;
 
@@ -24,7 +24,6 @@ public class Subject {
     @Column(name = "name", nullable = false)
     private String name;
 
-
     @Column(name = "teacher_ids", nullable = false)
     @Type(UUIDArrayType.class)
     private UUID[] teacherIds;
@@ -34,8 +33,8 @@ public class Subject {
         return AggregatorService.INSTANCE.getTeacherService().findAll().stream().filter(t -> asList.contains(t.getId())).toList();
     }
 
-    public CascadingSubject cascade() {
-        return new CascadingSubject(this.id, this.name, this.getTeachers());
+    public ResponseSubject response() {
+        return new ResponseSubject(id, name, Arrays.asList(teacherIds));
     }
 
     public Subject(String name, List<UUID> teacherIds) {

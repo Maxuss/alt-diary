@@ -1,9 +1,10 @@
 package space.maxus.dnevnik.data.model;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
@@ -11,7 +12,6 @@ import java.util.UUID;
 @Entity
 @Table(name = "teachers")
 @Data @NoArgsConstructor(force = true) @AllArgsConstructor @RequiredArgsConstructor
-@JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "$id")
 public class Teacher {
 
     @Id
@@ -23,6 +23,6 @@ public class Teacher {
     private final String email;
     private final String passHash;
 
-    @OneToMany(mappedBy = "leaderTeacher")
+    @OneToMany(mappedBy = "leaderTeacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
 }
