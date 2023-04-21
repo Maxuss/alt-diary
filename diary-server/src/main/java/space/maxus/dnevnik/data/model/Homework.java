@@ -15,22 +15,24 @@ import java.util.*;
 
 @Entity
 @Table(name = "homeworks")
-@Data @NoArgsConstructor(force = true) @RequiredArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor(force = true)
+@RequiredArgsConstructor
+@AllArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "$id")
 public class Homework {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "schedules_id_seq")
-    @Column(name = "id", unique = true, nullable = false)
-    private Long id;
-
     private final boolean isNone;
     private final String summary;
     private final UUID teacherId;
     @Column(name = "attachments")
     private final long[] attachmentIds;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "schedules_id_seq")
+    @Column(name = "id", unique = true, nullable = false)
+    private Long id;
 
     public List<Attachment> getAttachments() {
-        if(attachmentIds.length == 0)
+        if (attachmentIds.length == 0)
             return Collections.emptyList();
         return Arrays.stream(ArrayUtils.toObject(attachmentIds)).map(each -> AggregatorService.INSTANCE.getAttachmentService().findById(each).orElse(null)).filter(Objects::nonNull).toList();
     }

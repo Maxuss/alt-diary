@@ -7,7 +7,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 @Log4j2
 public class DiaryServerApplication {
-	public static void main(String[] args) {
-		SpringApplication.run(DiaryServerApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(DiaryServerApplication.class, args);
+    }
 }

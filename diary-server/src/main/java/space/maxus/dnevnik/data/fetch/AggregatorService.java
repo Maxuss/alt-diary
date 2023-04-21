@@ -5,7 +5,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.stereotype.Service;
 import space.maxus.dnevnik.data.service.*;
 
-@Service @Getter
+@Service
+@Getter
 public class AggregatorService implements InitializingBean {
     public static AggregatorService INSTANCE = null;
 
@@ -25,7 +26,7 @@ public class AggregatorService implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        if(INSTANCE == null)
+        if (INSTANCE == null)
             AggregatorService.INSTANCE = this;
     }
 }

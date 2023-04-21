@@ -33,7 +33,7 @@ public class AuthController {
     public QueryResponse<LoginResponse> studentLogin(HttpServletRequest request, @RequestBody LoginRequest login, HttpServletResponse response) {
         Student student = Auth.studentFromEmail(login.getEmail()).orElseThrow(() -> new StudentNotFoundException("Could not find student with provided email!"));
         boolean hashAuthentic = Auth.verifyHash(student.getPassHash(), login.getPassword().toCharArray());
-        if(!hashAuthentic)
+        if (!hashAuthentic)
             return QueryResponse.failure("Invalid password");
         return QueryResponse.success(new LoginResponse(Auth.persistAccess(response, Auth.genAccessToken(student)), Auth.persistRefresh(response, Auth.genRefreshToken(student)), student.getId(), new Date(System.currentTimeMillis() + Auth.STUDENT_EXPIRATION_TIME)));
     }
@@ -54,10 +54,10 @@ public class AuthController {
     @SneakyThrows
     public QueryResponse<RefreshResponse> studentRefresh(HttpServletRequest request, HttpServletResponse response) {
         Auth.JWTData jwt = Auth.verifyJwt(Auth.getRefreshToken(request).orElseThrow(() -> new JwtNotProvidedException("No refresh token provided")));
-        if(!jwt.isValid() || jwt.isTeacher())
+        if (!jwt.isValid() || jwt.isTeacher())
             return QueryResponse.failure("Invalid refresh token");
         return studentService.findById(jwt.getUid())
-                .map(student -> QueryResponse.success(new RefreshResponse(Auth.persistAccess(response, Auth.genAccessToken(student)), jwt.getUid(), new Date(System.currentTimeMillis() + Auth.ACCESS_TOKEN_EXPIRATION_TIME))))
+                .map(student -> QueryResponse.success(new RefreshResponse(new Date(System.currentTimeMillis() + Auth.ACCESS_TOKEN_EXPIRATION_TIME), Auth.persistAccess(response, Auth.genAccessToken(student)), jwt.getUid())))
                 .orElseGet(() -> QueryResponse.failure("Could not find student"));
     }
 
@@ -67,7 +67,10 @@ public class AuthController {
     }
 
     @StandardException
-    private static class StudentNotFoundException extends Exception { }
+    private static class StudentNotFoundException extends Exception {
+    }
+
     @StandardException
-    private static class JwtNotProvidedException extends Exception { }
+    private static class JwtNotProvidedException extends Exception {
+    }
 }

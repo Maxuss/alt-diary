@@ -36,7 +36,7 @@ public class UUIDArrayType implements UserType<UUID[]> {
         if (rs.wasNull()) {
             return new UUID[0];
         }
-        if(rs.getArray(position) == null){
+        if (rs.getArray(position) == null) {
             return new UUID[0];
         }
 

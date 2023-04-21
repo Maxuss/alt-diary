@@ -11,18 +11,19 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "teachers")
-@Data @NoArgsConstructor(force = true) @AllArgsConstructor @RequiredArgsConstructor
+@Data
+@NoArgsConstructor(force = true)
+@AllArgsConstructor
+@RequiredArgsConstructor
 public class Teacher {
-
-    @Id
-    private UUID id = UUID.randomUUID();
 
     private final String name;
     private final String surname;
     private final String patronymic;
     private final String email;
     private final String passHash;
-
+    @Id
+    private UUID id = UUID.randomUUID();
     @OneToMany(mappedBy = "leaderTeacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
 }

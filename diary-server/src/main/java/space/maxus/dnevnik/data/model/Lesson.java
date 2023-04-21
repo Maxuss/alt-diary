@@ -15,21 +15,21 @@ import java.util.Optional;
 
 @Entity
 @Table(name = "lessons")
-@Data @NoArgsConstructor(force = true) @RequiredArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor(force = true)
+@RequiredArgsConstructor
+@AllArgsConstructor
 public class Lesson {
+    private final long subjectId;
+    @Column(name = "marks")
+    private final long[] markIds;
+    private final long homeworkId;
+    @Column(name = "day")
+    private final Date date;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "lessons_id_seq")
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-
-    private final long subjectId;
-    @Column(name = "marks")
-    private final long[] markIds;
-
-    private final long homeworkId;
-    @Column(name = "day")
-    private final Date date;
-
     @OneToMany(mappedBy = "lesson")
     private List<Mark> marks = new ArrayList<>();
 

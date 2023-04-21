@@ -3,7 +3,7 @@ package space.maxus.dnevnik.auth;
 import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
-import com.auth0.jwt.exceptions.*;
+import com.auth0.jwt.exceptions.JWTVerificationException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -88,7 +88,7 @@ public class Auth {
     public Optional<String> getRefreshToken(HttpServletRequest request) {
         String headerValue = request.getHeader(AUTH_HEADER);
         Cookie cookie = WebUtils.getCookie(request, "refreshToken");
-        if(headerValue == null && cookie == null)
+        if (headerValue == null && cookie == null)
             return Optional.empty();
         String value = Objects.requireNonNullElseGet(headerValue, () -> Objects.requireNonNull(cookie).getValue());
         return Optional.of(value);
@@ -110,11 +110,11 @@ public class Auth {
     public Optional<Student> require(HttpServletRequest request) {
         String headerValue = request.getHeader(AUTH_HEADER);
         Cookie cookie = WebUtils.getCookie(request, "accessToken");
-        if(headerValue == null && cookie == null)
+        if (headerValue == null && cookie == null)
             return Optional.empty();
         String value = Objects.requireNonNullElseGet(headerValue, () -> Objects.requireNonNull(cookie).getValue());
         var data = verifyJwt(value);
-        if(!data.isValid() || data.isTeacher())
+        if (!data.isValid() || data.isTeacher())
             return Optional.empty();
 
         return AggregatorService.INSTANCE.getStudentService().findById(data.getUid());
@@ -123,11 +123,11 @@ public class Auth {
     public Optional<Teacher> requireTeacher(HttpServletRequest request) {
         String headerValue = request.getHeader(AUTH_HEADER);
         Cookie cookie = WebUtils.getCookie(request, "accessToken");
-        if(headerValue == null && cookie == null)
+        if (headerValue == null && cookie == null)
             return Optional.empty();
         String value = Objects.requireNonNullElseGet(headerValue, () -> Objects.requireNonNull(cookie).getValue());
         var data = verifyJwt(value);
-        if(!data.isValid() || !data.isTeacher())
+        if (!data.isValid() || !data.isTeacher())
             return Optional.empty();
 
         return AggregatorService.INSTANCE.getTeacherService().findById(data.getUid());

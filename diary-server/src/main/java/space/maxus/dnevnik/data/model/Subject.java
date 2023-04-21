@@ -14,7 +14,8 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "subjects")
-@Data @AllArgsConstructor
+@Data
+@AllArgsConstructor
 public class Subject {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "subjects_id_seq")
@@ -28,15 +29,6 @@ public class Subject {
     @Type(UUIDArrayType.class)
     private UUID[] teacherIds;
 
-    public List<Teacher> getTeachers() {
-        var asList = Arrays.asList(teacherIds);
-        return AggregatorService.INSTANCE.getTeacherService().findAll().stream().filter(t -> asList.contains(t.getId())).toList();
-    }
-
-    public ResponseSubject response() {
-        return new ResponseSubject(id, name, Arrays.asList(teacherIds));
-    }
-
     public Subject(String name, List<UUID> teacherIds) {
         this.name = name;
         this.teacherIds = teacherIds.toArray(new UUID[0]);
@@ -44,5 +36,14 @@ public class Subject {
 
     public Subject() {
 
+    }
+
+    public List<Teacher> getTeachers() {
+        var asList = Arrays.asList(teacherIds);
+        return AggregatorService.INSTANCE.getTeacherService().findAll().stream().filter(t -> asList.contains(t.getId())).toList();
+    }
+
+    public ResponseSubject response() {
+        return new ResponseSubject(id, name, Arrays.asList(teacherIds));
     }
 }

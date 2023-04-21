@@ -27,14 +27,14 @@ public class QueryResponse<R> {
 
     @Data
     public static class Successful<V> {
-        private boolean success = true;
         @JsonUnwrapped
         private final V value;
+        private boolean success = true;
     }
 
     @Data
     public static class None {
-        private boolean success = false;
         private final String message;
+        private boolean success = false;
     }
 }

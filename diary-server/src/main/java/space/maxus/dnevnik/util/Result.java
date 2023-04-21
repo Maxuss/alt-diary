@@ -12,8 +12,18 @@ import java.util.Optional;
 @Data
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Result<R, E> {
-    private final @Nullable @JsonUnwrapped R valueNullable;
-    private final @Nullable @JsonUnwrapped E errorNullable;
+    private final @Nullable
+    @JsonUnwrapped R valueNullable;
+    private final @Nullable
+    @JsonUnwrapped E errorNullable;
+
+    public static <V, E> Result<V, E> ok(V value) {
+        return new Result<>(value, null);
+    }
+
+    public static <V, E> Result<V, E> error(E error) {
+        return new Result<>(null, error);
+    }
 
     public boolean isOk() {
         return valueNullable != null;
@@ -61,14 +71,6 @@ public class Result<R, E> {
         if (isError()) {
             error.run(errorNullable);
         }
-    }
-
-    public static <V, E> Result<V, E> ok(V value) {
-        return new Result<>(value, null);
-    }
-
-    public static <V, E> Result<V, E> error(E error) {
-        return new Result<>(null, error);
     }
 
     @FunctionalInterface

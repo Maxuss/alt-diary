@@ -15,7 +15,7 @@ public class Util {
     @Contract(value = "null,null->fail", pure = true)
     public <V> V any(V first, V other) {
         var value = Stream.of(first, other).filter(Objects::nonNull).findFirst();
-        if(value.isEmpty()) {
+        if (value.isEmpty()) {
             throw new IllegalArgumentException("Both values in Util#any are null");
         }
         return value.get();

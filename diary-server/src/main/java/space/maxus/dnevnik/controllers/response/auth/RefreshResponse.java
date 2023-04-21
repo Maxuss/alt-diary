@@ -7,7 +7,7 @@ import java.util.UUID;
 
 @Data
 public class RefreshResponse {
+    public final Date validUntil;
     private final String accessToken;
     private final UUID uid;
-    public final Date validUntil;
 }

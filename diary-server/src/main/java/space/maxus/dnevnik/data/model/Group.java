@@ -17,23 +17,22 @@ import java.util.UUID;
 
 @Entity
 @Table(name = "groups")
-@Data @NoArgsConstructor(force = true) @RequiredArgsConstructor @AllArgsConstructor
+@Data
+@NoArgsConstructor(force = true)
+@RequiredArgsConstructor
+@AllArgsConstructor
 @JsonIdentityInfo(generator = ObjectIdGenerators.IntSequenceGenerator.class, property = "$id")
 public class Group {
+    private final String name;
+    @ManyToOne
+    @JoinColumn(columnDefinition = "leader_teacher_id")
+    private final Teacher leaderTeacher;
+    @Type(UUIDArrayType.class)
+    private final UUID[] studentsIds;
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "groups_id_seq")
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
-
-    private final String name;
-
-    @ManyToOne
-    @JoinColumn(columnDefinition = "leader_teacher_id")
-    private final Teacher leaderTeacher;
-
-    @Type(UUIDArrayType.class)
-    private final UUID[] studentsIds;
-
     @OneToMany(mappedBy = "group", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Schedule> schedules;
 
