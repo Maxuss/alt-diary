@@ -10,6 +10,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import space.maxus.dnevnik.controllers.response.ResponseStudent;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,8 +27,13 @@ public class Student {
     private final String surname;
     private final String email;
     private final String passHash;
+    private boolean confirmed = false;
     @OneToMany(mappedBy = "student")
     private final List<Mark> marks;
     @Id
     private UUID id = UUID.randomUUID();
+
+    public ResponseStudent response() {
+        return new ResponseStudent(id, name, surname, email, confirmed, marks != null ? marks.stream().map(Mark::response).toList() : null, null);
+    }
 }

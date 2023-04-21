@@ -19,16 +19,20 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-web'
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-	implementation 'org.apache.commons:commons-lang3'
-	implementation 'com.auth0:java-jwt:4.4.0'
-	implementation 'at.favre.lib:bcrypt:0.10.2'
-	implementation 'org.jetbrains:annotations:24.0.0'
-	compileOnly 'org.projectlombok:lombok'
-	runtimeOnly 'org.postgresql:postgresql'
+	implementation 'org.springframework.boot:spring-boot-starter-web' // spring
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa' // JPA database data
+	implementation 'org.springframework.boot:spring-boot-starter-validation' // Validating input
+	implementation 'org.springframework.boot:spring-boot-starter-mail' // Mail sending
+	implementation 'org.apache.commons:commons-lang3' // Apache
+	implementation 'com.google.guava:guava:31.1-jre' // Guava
+	implementation 'com.auth0:java-jwt:4.4.0' // JWT generation
+	implementation 'at.favre.lib:bcrypt:0.10.2' // password crypting
+	implementation 'org.jetbrains:annotations:24.0.0' // Lombok
+    compileOnly 'org.projectlombok:lombok'
+	runtimeOnly 'org.postgresql:postgresql' // postgres JDBC support
 	annotationProcessor 'org.projectlombok:lombok'
-	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	annotationProcessor "org.springframework.boot:spring-boot-configuration-processor" // Config annotations
+	testImplementation 'org.springframework.boot:spring-boot-starter-test' // spring
 }
 
 tasks.named('test') {

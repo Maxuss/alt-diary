@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS students
     name      varchar(127)                                      NOT NULL,
     surname   varchar(128)                                      NOT NULL,
     email     varchar(100)                                      NOT NULL,
+    confirmed bool                                              NOT NULL,
     pass_hash varchar(64)                                       NOT NULL
 );
 

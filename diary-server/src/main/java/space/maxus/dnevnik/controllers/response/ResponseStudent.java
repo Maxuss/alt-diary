@@ -14,6 +14,7 @@ public class ResponseStudent {
     private final String name;
     private final String surname;
     private final String email;
+    private final boolean isConfirmed;
     @JsonManagedReference
     private final List<ResponseMark> marks;
     @JsonBackReference

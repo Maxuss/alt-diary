@@ -2,6 +2,7 @@ package space.maxus.dnevnik.controllers;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import lombok.experimental.StandardException;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -9,9 +10,13 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import space.maxus.dnevnik.auth.Auth;
+import space.maxus.dnevnik.auth.MailService;
+import space.maxus.dnevnik.controllers.request.ConfirmationRequest;
 import space.maxus.dnevnik.controllers.request.LoginRequest;
 import space.maxus.dnevnik.controllers.request.RegisterRequest;
 import space.maxus.dnevnik.controllers.response.QueryResponse;
+import space.maxus.dnevnik.controllers.response.auth.ConfirmationResponse;
+import space.maxus.dnevnik.controllers.response.auth.IntermediateConfirmationResponse;
 import space.maxus.dnevnik.controllers.response.auth.LoginResponse;
 import space.maxus.dnevnik.controllers.response.auth.RefreshResponse;
 import space.maxus.dnevnik.data.model.Student;
@@ -21,11 +26,13 @@ import java.util.ArrayList;
 import java.util.Date;
 
 @RestController
-public class AuthController {
+public class StudentAuthController {
     private final StudentService studentService;
+    private final MailService mailService;
 
-    public AuthController(StudentService studentService) {
+    public StudentAuthController(StudentService studentService, MailService mailService) {
         this.studentService = studentService;
+        this.mailService = mailService;
     }
 
     @PostMapping("/student/login")
@@ -40,7 +47,7 @@ public class AuthController {
 
     @PostMapping("/student/register")
     @SneakyThrows
-    public QueryResponse<LoginResponse> studentRegister(HttpServletRequest request, @RequestBody RegisterRequest register, HttpServletResponse response) {
+    public QueryResponse<LoginResponse> studentRegister(HttpServletRequest request, @RequestBody @Valid RegisterRequest register, HttpServletResponse response) {
         return Auth.studentFromEmail(register.getEmail())
                 .map(student -> QueryResponse.<LoginResponse>failure("Student with this email already exists"))
                 .orElseGet(() -> {
@@ -50,7 +57,7 @@ public class AuthController {
                 });
     }
 
-    @GetMapping("/student/refresh")
+    @PostMapping("/student/refresh")
     @SneakyThrows
     public QueryResponse<RefreshResponse> studentRefresh(HttpServletRequest request, HttpServletResponse response) {
         Auth.JWTData jwt = Auth.verifyJwt(Auth.getRefreshToken(request).orElseThrow(() -> new JwtNotProvidedException("No refresh token provided")));
@@ -64,6 +71,29 @@ public class AuthController {
     @GetMapping("/student/test")
     public QueryResponse<Student> testRequireAuth(HttpServletRequest request) {
         return Auth.require(request).map(QueryResponse::success).orElse(QueryResponse.failure("Failed to authorize"));
+    }
+
+    @PostMapping("/student/confirm/request")
+    public QueryResponse<IntermediateConfirmationResponse> requestConfirm(HttpServletRequest request, HttpServletResponse response) {
+        return Auth.require(request).map(student -> {
+            if(student.isConfirmed())
+                return QueryResponse.<IntermediateConfirmationResponse>failure("Already confirmed");
+            mailService.sendValidationMail(student.getEmail(), Auth.genConfirmCode(student.getId()));
+            return QueryResponse.success(new IntermediateConfirmationResponse());
+        }).orElseGet(() -> Auth.notAuthorized(response));
+    }
+
+    @PostMapping("/student/confirm/commit")
+    public QueryResponse<ConfirmationResponse> confirmCommit(HttpServletRequest request, HttpServletResponse response, @RequestBody ConfirmationRequest confirm) {
+        return Auth.require(request).map(student -> {
+            if(student.isConfirmed())
+                return QueryResponse.<ConfirmationResponse>failure("Already confirmed");
+            return Auth.validateConfirmCode(confirm.getCode()).map(valid -> {
+                student.setConfirmed(true);
+                studentService.insertUpdate(student);
+                return QueryResponse.success(new ConfirmationResponse());
+            }).orElseGet(() -> QueryResponse.failure("Invalid code"));
+        }).orElseGet(() -> Auth.notAuthorized(response));
     }
 
     @StandardException

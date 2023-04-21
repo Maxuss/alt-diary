@@ -4,19 +4,24 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.Data;
 import lombok.experimental.UtilityClass;
 import lombok.extern.log4j.Log4j2;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.springframework.web.util.WebUtils;
+import space.maxus.dnevnik.controllers.response.QueryResponse;
 import space.maxus.dnevnik.data.fetch.AggregatorService;
 import space.maxus.dnevnik.data.model.Student;
 import space.maxus.dnevnik.data.model.Teacher;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
@@ -37,6 +42,11 @@ public class Auth {
     public String BEARER = "Bearer ";
     public SecureRandom RANDOM = new SecureRandom();
 
+    private final Cache<String, UUID> codes = CacheBuilder.newBuilder()
+            .concurrencyLevel(2)
+            .maximumSize(1000)
+            .expireAfterWrite(Duration.ofMinutes(10))
+            .build();
     public Optional<Student> studentFromEmail(String email) {
         return AggregatorService.INSTANCE.getStudentService().findAll().stream().filter(student -> student.getEmail().equals(email)).findFirst();
     }
@@ -146,6 +156,25 @@ public class Auth {
         cookie.setHttpOnly(true);
         response.addCookie(cookie);
         return accessToken;
+    }
+
+    public String genConfirmCode(UUID studentId) {
+        String str = RandomStringUtils.random(6, true, true);
+        codes.put(str, studentId);
+        return str;
+    }
+
+    public Optional<UUID> validateConfirmCode(String code) {
+        if(codes.asMap().containsKey(code)) {
+            UUID id = codes.asMap().remove(code);
+            return Optional.of(id);
+        }
+        return Optional.empty();
+    }
+
+    public <V> QueryResponse<V> notAuthorized(HttpServletResponse response) {
+        response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        return QueryResponse.failure("Unauthorized or the access token is invalid.");
     }
 
     @Data
