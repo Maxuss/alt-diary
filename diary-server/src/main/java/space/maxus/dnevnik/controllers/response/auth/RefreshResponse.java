@@ -6,9 +6,8 @@ import java.util.Date;
 import java.util.UUID;
 
 @Data
-public class LoginResponse {
-    public final String accessToken;
-    public final String refreshToken;
-    public final UUID uid;
+public class RefreshResponse {
+    private final String accessToken;
+    private final UUID uid;
     public final Date validUntil;
 }
