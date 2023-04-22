@@ -23,16 +23,13 @@ public class MailServiceBean {
         mailSender.setHost("live.smtp.mailtrap.io");
         mailSender.setPort(587);
 
-        mailSender.setUsername(configuration.getMailbox());
-        mailSender.setPassword(configuration.getMailpass());
+        mailSender.setUsername(configuration.getMail().getUsername());
+        mailSender.setPassword(configuration.getMail().getPassword());
 
         Properties props = mailSender.getJavaMailProperties();
         props.put("mail.transport.protocol", "smtp");
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", "true");
-
-        log.warn(configuration.getMailbox());
-        log.warn(configuration.getMailpass());
 
         return mailSender;
     }

@@ -5,10 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.SneakyThrows;
 import lombok.experimental.StandardException;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 import space.maxus.dnevnik.auth.Auth;
 import space.maxus.dnevnik.auth.MailService;
 import space.maxus.dnevnik.controllers.request.ConfirmationRequest;
@@ -94,6 +92,12 @@ public class StudentAuthController {
                 return QueryResponse.success(new ConfirmationResponse());
             }).orElseGet(() -> QueryResponse.failure("Invalid code"));
         }).orElseGet(() -> Auth.notAuthorized(response));
+    }
+
+    @ExceptionHandler(StudentNotFoundException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public QueryResponse<Void> notFoundErrorHandler(StudentNotFoundException e) {
+        return QueryResponse.failure(e.getMessage());
     }
 
     @StandardException

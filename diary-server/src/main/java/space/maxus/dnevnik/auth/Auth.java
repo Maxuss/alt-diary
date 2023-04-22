@@ -4,6 +4,7 @@ import at.favre.lib.crypto.bcrypt.BCrypt;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import jakarta.servlet.http.Cookie;
@@ -36,6 +37,8 @@ public class Auth {
     public long TEACHER_EXPIRATION_TIME = 42 * 24 * 60 * 60 * 1000L;
     // 1 hour
     public long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000L;
+    // 15 minutes
+    public long REGISTER_TOKEN_EXPIRATION_TIME = 15 * 60 * 1000L;
 
     public String SECRET = "d977d014df1ca15d2d66d4c9266399797e4e1af9d0c458c858977c931cdff14dec1dad0470573ed307d843b375f0170090115f04778edd87be3556bbc8624e83";
     public String AUTH_HEADER = "Authentication";
@@ -47,6 +50,23 @@ public class Auth {
             .maximumSize(1000)
             .expireAfterWrite(Duration.ofMinutes(10))
             .build();
+
+    public String genTeacherRegisterToken(String email) {
+        return JWT.create()
+                .withSubject(email)
+                .withClaim("register", true)
+                .withExpiresAt(new Date(System.currentTimeMillis() + REGISTER_TOKEN_EXPIRATION_TIME))
+                .sign(Algorithm.HMAC512(SECRET));
+    }
+
+    public Optional<String> validateRegisterToken(String token) {
+        return rawJwt(token).map(jwt -> jwt.getClaim("register").asBoolean() ? Objects.requireNonNull(jwt.getSubject()) : "null");
+    }
+
+    public Optional<Teacher> teacherFromEmail(String email) {
+        return AggregatorService.INSTANCE.getTeacherService().findAll().stream().filter(teacher -> teacher.getEmail().equals(email)).findFirst();
+    }
+
     public Optional<Student> studentFromEmail(String email) {
         return AggregatorService.INSTANCE.getStudentService().findAll().stream().filter(student -> student.getEmail().equals(email)).findFirst();
     }
@@ -114,6 +134,16 @@ public class Auth {
         } catch (JWTVerificationException verificationException) {
             log.error("Invalid JWT: " + verificationException);
             return new JWTData(false, null, null, false, false);
+        }
+    }
+
+    public Optional<DecodedJWT> rawJwt(String jwt) {
+        try {
+            var data = JWT.require(Algorithm.HMAC512(SECRET.getBytes())).build().verify(jwt);
+            return Optional.of(data);
+        } catch (JWTVerificationException verificationException) {
+            log.error("Invalid JWT: " + verificationException);
+            return Optional.empty();
         }
     }
 
