@@ -147,6 +147,19 @@ public class Auth {
         }
     }
 
+    public Optional<UUID> requireAny(HttpServletRequest request) {
+        String headerValue = request.getHeader(AUTH_HEADER);
+        Cookie cookie = WebUtils.getCookie(request, "accessToken");
+        if (headerValue == null && cookie == null)
+            return Optional.empty();
+        String value = Objects.requireNonNullElseGet(headerValue, () -> Objects.requireNonNull(cookie).getValue());
+        var data = verifyJwt(value);
+        if (!data.isValid())
+            return Optional.empty();
+
+        return Optional.of(data.getUid());
+    }
+
     public Optional<Student> require(HttpServletRequest request) {
         String headerValue = request.getHeader(AUTH_HEADER);
         Cookie cookie = WebUtils.getCookie(request, "accessToken");
@@ -177,6 +190,7 @@ public class Auth {
     public String persistRefresh(HttpServletResponse response, String refreshToken) {
         Cookie cookie = new Cookie("refreshToken", refreshToken);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
         return refreshToken;
     }
@@ -184,6 +198,7 @@ public class Auth {
     public String persistAccess(HttpServletResponse response, String accessToken) {
         Cookie cookie = new Cookie("accessToken", accessToken);
         cookie.setHttpOnly(true);
+        cookie.setPath("/");
         response.addCookie(cookie);
         return accessToken;
     }
