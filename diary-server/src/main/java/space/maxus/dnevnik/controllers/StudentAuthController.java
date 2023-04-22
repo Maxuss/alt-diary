@@ -19,6 +19,7 @@ import space.maxus.dnevnik.controllers.response.auth.LoginResponse;
 import space.maxus.dnevnik.controllers.response.auth.RefreshResponse;
 import space.maxus.dnevnik.data.model.Student;
 import space.maxus.dnevnik.data.service.StudentService;
+import space.maxus.dnevnik.exception.JwtNotProvidedException;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,11 +67,6 @@ public class StudentAuthController {
                 .orElseGet(() -> QueryResponse.failure("Could not find student"));
     }
 
-    @GetMapping("/student/test")
-    public QueryResponse<Student> testRequireAuth(HttpServletRequest request) {
-        return Auth.require(request).map(QueryResponse::success).orElse(QueryResponse.failure("Failed to authorize"));
-    }
-
     @PostMapping("/student/confirm/request")
     public QueryResponse<IntermediateConfirmationResponse> requestConfirm(HttpServletRequest request, HttpServletResponse response) {
         return Auth.require(request).map(student -> {
@@ -102,9 +98,5 @@ public class StudentAuthController {
 
     @StandardException
     private static class StudentNotFoundException extends Exception {
-    }
-
-    @StandardException
-    private static class JwtNotProvidedException extends Exception {
     }
 }

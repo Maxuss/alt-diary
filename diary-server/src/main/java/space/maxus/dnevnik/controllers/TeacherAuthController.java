@@ -12,8 +12,10 @@ import space.maxus.dnevnik.controllers.request.LoginRequest;
 import space.maxus.dnevnik.controllers.request.TeacherRegisterRequest;
 import space.maxus.dnevnik.controllers.response.QueryResponse;
 import space.maxus.dnevnik.controllers.response.auth.LoginResponse;
+import space.maxus.dnevnik.controllers.response.auth.RefreshResponse;
 import space.maxus.dnevnik.data.model.Teacher;
 import space.maxus.dnevnik.data.service.TeacherService;
+import space.maxus.dnevnik.exception.JwtNotProvidedException;
 
 import java.util.Date;
 
@@ -46,6 +48,17 @@ public class TeacherAuthController {
                     return QueryResponse.success(new LoginResponse(Auth.persistAccess(response, Auth.genAccessToken(newTeacher)), Auth.persistRefresh(response, Auth.genRefreshToken(newTeacher)), newTeacher.getId(), new Date(System.currentTimeMillis() + Auth.STUDENT_EXPIRATION_TIME)));
                 })
                 .orElseGet(() -> QueryResponse.failure("Invalid register token"));
+    }
+
+    @PostMapping("/teacher/refresh")
+    @SneakyThrows
+    public QueryResponse<RefreshResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
+        Auth.JWTData jwt = Auth.verifyJwt(Auth.getRefreshToken(request).orElseThrow(() -> new JwtNotProvidedException("No refresh token provided")));
+        if (!jwt.isValid() || !jwt.isTeacher())
+            return QueryResponse.failure("Invalid refresh token");
+        return teacherService.findById(jwt.getUid())
+                .map(teacher -> QueryResponse.success(new RefreshResponse(new Date(System.currentTimeMillis() + Auth.ACCESS_TOKEN_EXPIRATION_TIME), Auth.persistAccess(response, Auth.genAccessToken(teacher)), jwt.getUid())))
+                .orElseGet(() -> QueryResponse.failure("Could not find teacher"));
     }
 
     @ExceptionHandler(TeacherNotFoundException.class)
