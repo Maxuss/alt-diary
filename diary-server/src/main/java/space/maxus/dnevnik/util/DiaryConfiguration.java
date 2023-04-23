@@ -10,6 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class DiaryConfiguration {
     private MailData mail;
     private AdminData admin;
+    private Files files;
 
     @Getter
     @Setter
@@ -22,5 +23,11 @@ public class DiaryConfiguration {
     @Setter
     public static class AdminData {
         private String secret;
+    }
+
+    @Getter
+    @Setter
+    public static class Files {
+        private String path;
     }
 }

@@ -26,6 +26,7 @@ public class Homework {
     private final UUID teacherId;
     @Column(name = "attachments")
     private final long[] attachmentIds;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "homeworks_id_seq")
     @Column(name = "id", unique = true, nullable = false)
@@ -39,5 +40,15 @@ public class Homework {
 
     public ResponseHomework response() {
         return new ResponseHomework(id, isNone, summary, teacherId, getAttachments());
+    }
+
+    public Homework merge(Homework other) {
+        return new Homework(
+                other.isNone,
+                other.summary,
+                other.teacherId,
+                ArrayUtils.addAll(attachmentIds, other.attachmentIds),
+                id
+        );
     }
 }
