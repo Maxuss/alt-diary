@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS marks
     FOREIGN KEY (lesson_id) REFERENCES lessons (id),
     CHECK (idx BETWEEN 1 AND 5),
     kind       varchar(64)                                              NOT NULL DEFAULT 'GENERIC',
+    message    varchar(128)                                             NOT NULL DEFAULT '',
     student_id uuid                                                     NOT NULL,
     FOREIGN KEY (student_id) REFERENCES students (id),
     teacher_id uuid                                                     NOT NULL,

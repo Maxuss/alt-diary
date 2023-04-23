@@ -24,6 +24,7 @@ public class Mark {
     private final byte index;
     @Enumerated(EnumType.STRING)
     private final Kind kind;
+    private final String message;
     @ManyToOne
     @JoinColumn(name = "lesson_id")
     private final Lesson lesson;
@@ -37,7 +38,7 @@ public class Mark {
     private Long id;
 
     public ResponseMark response() {
-        return new ResponseMark(id, value, index, kind, teacherId);
+        return new ResponseMark(id, value, index, message, kind, teacherId, student == null ? null : student.getId());
     }
 
     public enum Kind {
