@@ -3,10 +3,7 @@ package space.maxus.dnevnik.controllers.general;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import space.maxus.dnevnik.auth.Auth;
 import space.maxus.dnevnik.controllers.request.LessonsRequest;
 import space.maxus.dnevnik.controllers.response.QueryResponse;
@@ -36,7 +33,7 @@ public class LessonController {
         return Auth.require(request)
                 .map(student -> {
                     Group group = groupService.findAll().stream().filter(g -> Arrays.stream(g.getStudentsIds()).toList().contains(student.getId())).findFirst().orElseThrow();
-                    LocalDate local = LocalDate.from(date.toInstant());
+                    LocalDate local = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
                     int dayOfWeek = local.getDayOfWeek().ordinal();
                     Schedule schedule = group.getSchedules().stream().filter(s -> s.getDayOfWeek() == dayOfWeek).findFirst().orElseThrow();
                     DailySchedule daily = dailyScheduleService.scheduleForDate(schedule, date);
@@ -45,7 +42,7 @@ public class LessonController {
                 .orElseGet(() -> Auth.notAuthorized(response));
     }
 
-    @GetMapping("/lessons/by-group")
+    @PostMapping("/lessons/by-group")
     public QueryResponse<ResponseDailySchedule> lessons(HttpServletRequest request, HttpServletResponse response, @RequestBody LessonsRequest req) {
         return Auth.requireAny(request)
                 .map(student -> {
