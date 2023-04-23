@@ -29,13 +29,6 @@ public class MarkController {
         this.studentService = studentService;
     }
 
-    /**
-     * Grants a mark to a student
-     * @param request
-     * @param response
-     * @param create Data of the mark to grant
-     * @return a granted mark
-     */
     @PutMapping("/marks/grant")
     public QueryResponse<ResponseMark> createMark(
             HttpServletRequest request,
