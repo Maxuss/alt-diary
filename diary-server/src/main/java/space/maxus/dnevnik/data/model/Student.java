@@ -27,9 +27,9 @@ public class Student {
     private final String surname;
     private final String email;
     private final String passHash;
-    private boolean confirmed = false;
     @OneToMany(mappedBy = "student")
     private final List<Mark> marks;
+    private boolean confirmed = false;
     @Id
     private UUID id = UUID.randomUUID();
 

@@ -30,7 +30,7 @@ public class MailService {
         helper.setText("""
                 <div>
                 Ваш код верификации аккаунта на дневнике: <strong> %s </strong><br/>
-                
+                                
                 Если это были не вы, то просто проигнорируйте это письмо.
                 </div>
                 """.formatted(code), true);

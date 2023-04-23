@@ -19,7 +19,7 @@ public class AdminController {
 
     @PostMapping("/admin/teacher-token")
     public String genTeacherRegisterToken(@RequestBody AdminRequest<String> request) {
-        if(Objects.equals(request.adminToken, configuration.getAdmin().getSecret()))
+        if (Objects.equals(request.adminToken, configuration.getAdmin().getSecret()))
             return Auth.genTeacherRegisterToken(request.payload);
         return null;
     }

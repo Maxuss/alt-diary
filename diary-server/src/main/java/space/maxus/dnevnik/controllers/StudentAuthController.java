@@ -70,7 +70,7 @@ public class StudentAuthController {
     @PostMapping("/student/confirm/request")
     public QueryResponse<IntermediateConfirmationResponse> requestConfirm(HttpServletRequest request, HttpServletResponse response) {
         return Auth.require(request).map(student -> {
-            if(student.isConfirmed())
+            if (student.isConfirmed())
                 return QueryResponse.<IntermediateConfirmationResponse>failure("Already confirmed");
             mailService.sendValidationMail(student.getEmail(), Auth.genConfirmCode(student.getId()));
             return QueryResponse.success(new IntermediateConfirmationResponse());
@@ -80,7 +80,7 @@ public class StudentAuthController {
     @PostMapping("/student/confirm/commit")
     public QueryResponse<ConfirmationResponse> confirmCommit(HttpServletRequest request, HttpServletResponse response, @RequestBody ConfirmationRequest confirm) {
         return Auth.require(request).map(student -> {
-            if(student.isConfirmed())
+            if (student.isConfirmed())
                 return QueryResponse.<ConfirmationResponse>failure("Already confirmed");
             return Auth.validateConfirmCode(confirm.getCode()).map(valid -> {
                 student.setConfirmed(true);

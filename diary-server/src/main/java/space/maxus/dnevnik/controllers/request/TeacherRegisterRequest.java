@@ -14,7 +14,8 @@ public class TeacherRegisterRequest {
     private final String password;
     @NotBlank(message = "Patronymic is required")
     private final String patronymic;
-    @NotBlank(message = "Email is required") @Email
+    @NotBlank(message = "Email is required")
+    @Email
     private final String email;
     @NotBlank(message = "Register validation is required")
     private final String registerToken;

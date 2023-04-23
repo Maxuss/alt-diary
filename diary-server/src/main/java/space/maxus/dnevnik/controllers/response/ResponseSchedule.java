@@ -10,4 +10,5 @@ public class ResponseSchedule {
     private final long groupId;
     private final byte dayOfWeek;
     private final List<ResponseSubject> subjects;
+    private final List<Long> breakDurations;
 }

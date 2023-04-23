@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
+import space.maxus.dnevnik.controllers.response.ResponseTeacher;
 
 import java.util.List;
 import java.util.UUID;
@@ -26,4 +27,12 @@ public class Teacher {
     private UUID id = UUID.randomUUID();
     @OneToMany(mappedBy = "leaderTeacher", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Group> groups;
+
+    public ResponseTeacher response() {
+        return new ResponseTeacher(id, name, patronymic, surname, email, List.of());
+    }
+
+    public ResponseTeacher withGroups() {
+        return new ResponseTeacher(id, name, patronymic, surname, email, groups.stream().map(Group::response).toList());
+    }
 }

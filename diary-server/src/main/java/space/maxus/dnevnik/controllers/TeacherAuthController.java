@@ -32,7 +32,7 @@ public class TeacherAuthController {
     public QueryResponse<LoginResponse> login(HttpServletRequest request, HttpServletResponse response, @RequestBody @NotNull LoginRequest login) {
         Teacher teacher = Auth.teacherFromEmail(login.getEmail()).orElseThrow(() -> new TeacherNotFoundException("Could not find teacher with email %s".formatted(login.getEmail())));
         boolean hashAuthentic = Auth.verifyHash(teacher.getPassHash(), login.getPassword().toCharArray());
-        if(!hashAuthentic)
+        if (!hashAuthentic)
             return QueryResponse.failure("Incorrect password");
         return QueryResponse.success(new LoginResponse(Auth.persistAccess(response, Auth.genAccessToken(teacher)), Auth.persistRefresh(response, Auth.genRefreshToken(teacher)), teacher.getId(), new Date(System.currentTimeMillis() + Auth.STUDENT_EXPIRATION_TIME)));
     }
@@ -41,7 +41,7 @@ public class TeacherAuthController {
     public QueryResponse<LoginResponse> register(HttpServletRequest request, HttpServletResponse response, @RequestBody TeacherRegisterRequest register) {
         return Auth.validateRegisterToken(register.getRegisterToken())
                 .map(email -> {
-                    if(!email.equals(register.getEmail()))
+                    if (!email.equals(register.getEmail()))
                         return QueryResponse.<LoginResponse>failure("Invalid email");
                     Teacher newTeacher = new Teacher(register.getName(), register.getSurname(), register.getPatronymic(), register.getEmail(), Auth.hashPassword(register.getPassword().toCharArray()));
                     teacherService.insertUpdate(newTeacher);
@@ -68,6 +68,7 @@ public class TeacherAuthController {
     }
 
     @StandardException
-    private static class TeacherNotFoundException extends Exception { }
+    private static class TeacherNotFoundException extends Exception {
+    }
 }
 

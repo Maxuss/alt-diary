@@ -1,9 +1,8 @@
 package space.maxus.dnevnik.controllers.request;
 
 import jakarta.validation.constraints.Email;
-import lombok.Data;
-
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
 @Data
 public class RegisterRequest {
@@ -13,6 +12,7 @@ public class RegisterRequest {
     private final String surname;
     @NotBlank(message = "Password is required")
     private final String password;
-    @NotBlank(message = "Email is required") @Email
+    @NotBlank(message = "Email is required")
+    @Email
     private final String email;
 }

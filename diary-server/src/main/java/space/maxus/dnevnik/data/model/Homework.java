@@ -27,7 +27,7 @@ public class Homework {
     @Column(name = "attachments")
     private final long[] attachmentIds;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "schedules_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "homeworks_id_seq")
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 

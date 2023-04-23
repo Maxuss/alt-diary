@@ -9,7 +9,8 @@ import space.maxus.dnevnik.util.DiaryConfiguration;
 
 import java.util.Properties;
 
-@Component @Log4j2
+@Component
+@Log4j2
 public class MailServiceBean {
     private final DiaryConfiguration configuration;
 

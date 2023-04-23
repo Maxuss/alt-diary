@@ -8,8 +8,8 @@ import lombok.RequiredArgsConstructor;
 import space.maxus.dnevnik.controllers.response.ResponseLesson;
 import space.maxus.dnevnik.data.fetch.AggregatorService;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,11 +21,11 @@ import java.util.Optional;
 @AllArgsConstructor
 public class Lesson {
     private final long subjectId;
-    @Column(name = "marks")
-    private final long[] markIds;
     private final long homeworkId;
-    @Column(name = "day")
-    private final Date date;
+    private final LocalTime beginTime;
+    private final LocalTime endTime;
+    @Column(name = "marks")
+    private long[] markIds = new long[0];
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "lessons_id_seq")
     @Column(name = "id", unique = true, nullable = false)
@@ -37,11 +37,15 @@ public class Lesson {
         return AggregatorService.INSTANCE.getHomeworkService().findById(homeworkId);
     }
 
-    public ResponseLesson response() {
+    public ResponseLesson response(long nextBreak) {
         return new ResponseLesson(
                 id,
+                beginTime,
+                endTime,
+                nextBreak,
                 AggregatorService.INSTANCE.getSubjectService().findById(subjectId).map(Subject::response).orElse(null),
                 marks.stream().map(Mark::response).toList(),
-                AggregatorService.INSTANCE.getHomeworkService().findById(homeworkId).map(Homework::response).orElse(null), date);
+                AggregatorService.INSTANCE.getHomeworkService().findById(homeworkId).map(Homework::response).orElse(null)
+        );
     }
 }

@@ -31,6 +31,11 @@ import java.util.UUID;
 @UtilityClass
 @Log4j2
 public class Auth {
+    private final Cache<String, UUID> codes = CacheBuilder.newBuilder()
+            .concurrencyLevel(2)
+            .maximumSize(1000)
+            .expireAfterWrite(Duration.ofMinutes(10))
+            .build();
     // 21 days -> three weeks
     public long STUDENT_EXPIRATION_TIME = 21 * 24 * 60 * 60 * 1000L;
     // 42 days -> six weeks
@@ -39,17 +44,10 @@ public class Auth {
     public long ACCESS_TOKEN_EXPIRATION_TIME = 60 * 60 * 1000L;
     // 15 minutes
     public long REGISTER_TOKEN_EXPIRATION_TIME = 15 * 60 * 1000L;
-
     public String SECRET = "d977d014df1ca15d2d66d4c9266399797e4e1af9d0c458c858977c931cdff14dec1dad0470573ed307d843b375f0170090115f04778edd87be3556bbc8624e83";
     public String AUTH_HEADER = "Authentication";
     public String BEARER = "Bearer ";
     public SecureRandom RANDOM = new SecureRandom();
-
-    private final Cache<String, UUID> codes = CacheBuilder.newBuilder()
-            .concurrencyLevel(2)
-            .maximumSize(1000)
-            .expireAfterWrite(Duration.ofMinutes(10))
-            .build();
 
     public String genTeacherRegisterToken(String email) {
         return JWT.create()
@@ -210,7 +208,7 @@ public class Auth {
     }
 
     public Optional<UUID> validateConfirmCode(String code) {
-        if(codes.asMap().containsKey(code)) {
+        if (codes.asMap().containsKey(code)) {
             UUID id = codes.asMap().remove(code);
             return Optional.of(id);
         }

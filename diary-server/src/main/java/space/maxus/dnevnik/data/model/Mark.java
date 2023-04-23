@@ -32,7 +32,7 @@ public class Mark {
     private final Student student;
     private final UUID teacherId;
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "lessons_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "marks_id_seq")
     @Column(name = "id", unique = true, nullable = false)
     private Long id;
 

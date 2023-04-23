@@ -15,13 +15,15 @@ public class AggregatorService implements InitializingBean {
     private final AttachmentService attachmentService;
     private final HomeworkService homeworkService;
     private final SubjectService subjectService;
+    private final LessonService lessonService;
 
-    public AggregatorService(TeacherService teacherService, StudentService studentService, AttachmentService attachmentService, HomeworkService homeworkService, SubjectService subjectService) {
+    public AggregatorService(TeacherService teacherService, StudentService studentService, AttachmentService attachmentService, HomeworkService homeworkService, SubjectService subjectService, LessonService lessonService) {
         this.teacherService = teacherService;
         this.studentService = studentService;
         this.attachmentService = attachmentService;
         this.homeworkService = homeworkService;
         this.subjectService = subjectService;
+        this.lessonService = lessonService;
     }
 
     @Override
