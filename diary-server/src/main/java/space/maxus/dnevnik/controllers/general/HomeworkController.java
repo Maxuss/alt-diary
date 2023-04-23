@@ -44,7 +44,7 @@ public class HomeworkController {
             HttpServletResponse response,
             @RequestParam("file") MultipartFile file
     ) throws IOException {
-        if(Auth.requireAny(request).isEmpty())
+        if (Auth.requireAny(request).isEmpty())
             return Auth.notAuthorized(response);
         Path path = fileService.saveFile(file, Objects.requireNonNull(file.getOriginalFilename()));
         String fileName = path.getFileName().toString();

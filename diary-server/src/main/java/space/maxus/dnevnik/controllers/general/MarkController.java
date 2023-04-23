@@ -37,9 +37,9 @@ public class MarkController {
     ) {
         return Auth.requireTeacher(request)
                 .map(teacher -> {
-                    if(!lessonService.getRepository().existsById(create.getLessonId()))
+                    if (!lessonService.getRepository().existsById(create.getLessonId()))
                         return QueryResponse.<ResponseMark>failure("Invalid lesson ID");
-                    if(!studentService.getRepository().existsById(create.getStudentId()))
+                    if (!studentService.getRepository().existsById(create.getStudentId()))
                         return QueryResponse.<ResponseMark>failure("Invalid student ID");
                     Lesson lesson = lessonService.findById(create.getLessonId()).orElseThrow();
                     Mark mark = new Mark(

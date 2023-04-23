@@ -22,7 +22,7 @@ public class FileService {
 
     public FileService(DiaryConfiguration config, ResourceLoader resourceLoader) {
         this.basePath = Paths.get(config.getFiles().getPath());
-        if(!basePath.toFile().exists() && (!basePath.toFile().mkdirs())) {
+        if (!basePath.toFile().exists() && (!basePath.toFile().mkdirs())) {
             throw new FileServiceInitException("Failed to init FileService: base path does not exist and could not be created");
         }
     }
@@ -31,7 +31,7 @@ public class FileService {
         String origName = name.replaceAll("[\\\\/~^]|(\\.\\.)", "").replace(' ', '_');
         String resultName = origName;
         int idx = 1;
-        while(Files.exists(basePath.resolve(resultName))) {
+        while (Files.exists(basePath.resolve(resultName))) {
             resultName = "(%s) %s".formatted(idx++, origName);
         }
         Path last = basePath.resolve(resultName);

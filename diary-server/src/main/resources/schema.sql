@@ -70,8 +70,8 @@ CREATE TABLE IF NOT EXISTS lessons
     marks       int8[]                                                   NOT NULL,
     homework_id int8                                                     NOT NULL,
     FOREIGN KEY (homework_id) REFERENCES homeworks (id),
-    begin_time  time     NOT NULL,
-    end_time time NOT NULL
+    begin_time  time                                                     NOT NULL,
+    end_time    time                                                     NOT NULL
 );
 
 -- A single given mark
