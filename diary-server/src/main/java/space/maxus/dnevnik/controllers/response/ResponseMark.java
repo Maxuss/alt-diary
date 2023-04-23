@@ -9,8 +9,8 @@ import java.util.UUID;
 @Data
 public class ResponseMark {
     private final long id;
-    private final byte value;
-    private final byte index;
+    private final int value;
+    private final int index;
     private final String message;
     private final Mark.Kind kind;
     private final UUID teacherId;

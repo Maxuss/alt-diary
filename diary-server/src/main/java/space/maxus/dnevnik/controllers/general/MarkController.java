@@ -29,6 +29,13 @@ public class MarkController {
         this.studentService = studentService;
     }
 
+    /**
+     * Grants a mark to a student
+     * @param request
+     * @param response
+     * @param create Data of the mark to grant
+     * @return a granted mark
+     */
     @PutMapping("/marks/grant")
     public QueryResponse<ResponseMark> createMark(
             HttpServletRequest request,
@@ -43,8 +50,8 @@ public class MarkController {
                         return QueryResponse.<ResponseMark>failure("Invalid student ID");
                     Lesson lesson = lessonService.findById(create.getLessonId()).orElseThrow();
                     Mark mark = new Mark(
-                            create.getValue(),
-                            create.getIndex(),
+                            (byte) create.getValue(),
+                            (byte) create.getIndex(),
                             create.getKind(),
                             create.getMessage(),
                             lesson,
