@@ -1,6 +1,6 @@
 import axios from "axios"
 
-export const BASE_API_URL: string = "http://dnevnik.maxus.space/api"
+export const BASE_API_URL: string = "https://dnevnik.maxus.space/api"
 
 export async function post(url: string, body: any = {}): Promise<any> {
     return await axios.post(BASE_API_URL + url, {
