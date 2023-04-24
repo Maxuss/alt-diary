@@ -1,9 +1,5 @@
+import { Mark as MarkData } from "@/types/lessons"
 import { Badge, Spacer, Text, useTheme } from "@nextui-org/react"
-
-export interface MarkData {
-    value: number,
-    index: number,
-}
 
 const markBgLight = "bg-gradient-to-bl from-violet-50 to-indigo-100"
 const markBgDark = "bg-gradient-to-br from-slate-700 to-gray-800"
