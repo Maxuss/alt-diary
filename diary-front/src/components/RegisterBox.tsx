@@ -144,7 +144,7 @@ export const RegisterBox: React.FC<RegisterBoxProps> = (props) => {
                         props.onSend(nameInputRef.current.value, surnameInputRef.current.value, emailInputRef.current.value, passwordInputRef.current.value).then(value => {
                             if (value === "success") {
                                 // everything fine
-                                router.replace("/student/register", "/schedule")
+                                router.replace("/student/register", "/schedule");
                                 router.reload();
                             } else {
                                 // an error occurred
@@ -161,7 +161,7 @@ export const RegisterBox: React.FC<RegisterBoxProps> = (props) => {
                             type="points"
                         />
                     </div>
-                    <Text b hidden={buttonState === "loading"}>
+                    <Text b size={16} color="white" hidden={buttonState === "loading"}>
                         Создать аккаунт
                     </Text>
                 </Button>
