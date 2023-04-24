@@ -145,6 +145,7 @@ export const RegisterBox: React.FC<RegisterBoxProps> = (props) => {
                             if (value === "success") {
                                 // everything fine
                                 router.replace("/student/register", "/schedule")
+                                router.reload();
                             } else {
                                 // an error occurred
                                 setErrorState(value)
