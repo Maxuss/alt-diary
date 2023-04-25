@@ -10,10 +10,12 @@ export const lightTheme = createTheme({
   type: 'light',
   theme: {
     colors: {
+      paginationColor: "linear-gradient(0deg, var(--color-blue-400), var(--color-cyan-300))",
       textLight: '#6d6d6d',
 
       primaryGradient: "linear-gradient(90deg, var(--color-sky-300) 0%, var(--color-blue-400) 80%)",
-      secondaryGradient: "linear-gradient(90deg, var(--color-red-400) 0%, var(--color-amber-200) 60%)"
+      secondaryGradient: "linear-gradient(90deg, var(--color-red-400) 0%, var(--color-amber-200) 60%)",
+      lessonsGradient: "linear-gradient(0deg, var(--color-blue-400), var(--color-blue-300))",
     },
   }
 })
@@ -22,10 +24,12 @@ export const darkTheme = createTheme({
   type: 'dark',
   theme: {
     colors: {
+      paginationColor: "linear-gradient(0deg, var(--color-violet-600), var(--color-indigo-400))",
       textLight: '#999999',
 
       primaryGradient: "linear-gradient(90deg, var(--color-indigo-500) 0%, var(--color-violet-500) 60%)",
-      secondaryGradient: "linear-gradient(90deg, var(--color-orange-400) 0%, var(--color-amber-400) 60%)"
+      secondaryGradient: "linear-gradient(90deg, var(--color-orange-400) 0%, var(--color-amber-400) 60%)",
+      lessonsGradient: "linear-gradient(0deg, var(--color-violet-600), var(--color-indigo-400))",
     }
   }
 })

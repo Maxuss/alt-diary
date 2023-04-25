@@ -37,7 +37,7 @@ public class GroupController {
         return Auth.requireAny(request)
                 .map(uid -> groupService.findById(id)
                         .map(it -> QueryResponse.success(it.response()))
-                        .orElseGet(() -> QueryResponse.failure("Could not find group with id %s".formatted(id)))
+                        .orElseGet(() -> QueryResponse.failure("Не удалось найти класс с ID %s".formatted(id)))
                 ).orElseGet(() -> Auth.notAuthorized(response));
     }
 
@@ -67,7 +67,7 @@ public class GroupController {
                 .map(teacher -> {
                     Group group = groupService.findById(add.getGroupId()).orElseThrow();
                     if (!studentService.getRepository().existsById(add.getStudentId()))
-                        return QueryResponse.<GenericPutResponse<Long>>failure("Invalid student ID");
+                        return QueryResponse.<GenericPutResponse<Long>>failure("Неверный ID ученика");
                     List<UUID> studentIds = Arrays.asList(group.getStudentsIds());
                     studentIds.add(add.getStudentId());
                     group.setStudentsIds(studentIds.toArray(new UUID[0]));

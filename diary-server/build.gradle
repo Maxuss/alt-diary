@@ -5,7 +5,7 @@ plugins {
 }
 
 group = 'space.maxus'
-version = '0.9-SNAPSHOT'
+version = '0.9.3-SNAPSHOT'
 sourceCompatibility = '17'
 
 configurations {

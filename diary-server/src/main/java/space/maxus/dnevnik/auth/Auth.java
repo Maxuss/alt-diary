@@ -217,7 +217,7 @@ public class Auth {
 
     public <V> QueryResponse<V> notAuthorized(HttpServletResponse response) {
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return QueryResponse.failure("Unauthorized or the access token is invalid.");
+        return QueryResponse.failure("Вы не авторизованы, или токен доступа неверен.");
     }
 
     @Data

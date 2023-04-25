@@ -36,3 +36,27 @@ code {
   display: flex;
   border-radius: 8px;
 }
+
+@media (max-width: 897px) {
+  .lesson-selector {
+    display: none;
+  }
+}
+
+.button-group.nextui-button--disabled {
+  background: var(--nextui-colors-lessonsGradient)
+}
+
+.nextui-pagination-highlight {
+  background: var(--nextui-colors-paginationColor)
+}
+
+.nextui-navbar-collapse {
+  background: inherit;
+}
+
+@media not (max-width: 897px) {
+  .lesson-pages {
+    display: none;
+  }
+}

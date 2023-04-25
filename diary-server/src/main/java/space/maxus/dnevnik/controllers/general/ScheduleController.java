@@ -33,7 +33,7 @@ public class ScheduleController {
     @GetMapping("/schedule/{id}")
     public QueryResponse<ResponseSchedule> schedule(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long id) {
         return Auth.requireAny(request)
-                .map(uid -> scheduleService.findById(id).map(it -> QueryResponse.success(it.response())).orElseGet(() -> QueryResponse.failure("Could not find schedule with id %s".formatted(id))))
+                .map(uid -> scheduleService.findById(id).map(it -> QueryResponse.success(it.response())).orElseGet(() -> QueryResponse.failure("Не удалось найти расписание с ID %s".formatted(id))))
                 .orElseGet(() -> Auth.notAuthorized(response));
     }
 
@@ -53,7 +53,7 @@ public class ScheduleController {
                         scheduleService.insertUpdate(newSchedule);
                         return QueryResponse.success(new GenericCreationResponse(newSchedule.getId()));
                     } catch (NoSuchElementException e) {
-                        return QueryResponse.<GenericCreationResponse>failure("No group with id %s".formatted(create.getGroupId()));
+                        return QueryResponse.<GenericCreationResponse>failure("Класс с ID %s не существует".formatted(create.getGroupId()));
                     }
                 })
                 .orElseGet(() -> Auth.notAuthorized(response));

@@ -31,7 +31,7 @@ public class SubjectController {
     @GetMapping("/subjects/{id}")
     public QueryResponse<ResponseSubject> subject(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") Long id) {
         return Auth.requireAny(request)
-                .map(uid -> subjectService.findById(id).map(subject -> QueryResponse.success(subject.response())).orElseGet(() -> QueryResponse.failure("Could not find subject")))
+                .map(uid -> subjectService.findById(id).map(subject -> QueryResponse.success(subject.response())).orElseGet(() -> QueryResponse.failure("Не удалось найти предмет")))
                 .orElseGet(() -> Auth.notAuthorized(response));
     }
 

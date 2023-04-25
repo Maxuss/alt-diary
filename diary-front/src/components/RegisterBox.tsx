@@ -144,8 +144,7 @@ export const RegisterBox: React.FC<RegisterBoxProps> = (props) => {
                         props.onSend(nameInputRef.current.value, surnameInputRef.current.value, emailInputRef.current.value, passwordInputRef.current.value).then(value => {
                             if (value === "success") {
                                 // everything fine
-                                router.replace("/student/register", "/schedule");
-                                router.reload();
+                                router.push("/schedule");
                             } else {
                                 // an error occurred
                                 setErrorState(value)

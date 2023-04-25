@@ -1,38 +1,29 @@
 import { NextApiRequest, NextApiResponse } from "next";
-import NextCors from "nextjs-cors";
-import { BASE_API_URL } from "./core";
-import axios, { AxiosResponse } from "axios";
-import { RegisterData } from "@/api/auth";
+import { BASE_API_URL, setupRoute } from "./core";
+import axios from "axios";
 
 export default async function handler(
     req: NextApiRequest,
     res: NextApiResponse<string>
 ) {
-    return;
-    // TODO: does not work
-    await NextCors(req, res, {
-        // Options
-        methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-        origin: '*',
-        optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
-        exposedHeaders: ['Set-Cookie']
-    });
-    console.log("REFRESH");
-    const refreshToken = req.cookies['refreshToken']
-    console.log(refreshToken);
-    const response = await axios.post(`${BASE_API_URL}/student/refresh`, {
-        withCredentials: true,
-        Headers: {
-            'Cookie': `refreshToken=${refreshToken}`
+    await setupRoute(req, res)
+    const refresh = req.cookies['refreshToken']
+    await axios.post(`${BASE_API_URL}/student/refresh`, undefined, {
+        // withCredentials: true,
+        headers: {
+            'Cookie': `refreshToken=${refresh}`,
         }
-    }).catch(err => {
-        console.error(err.response.data)
-    }) as AxiosResponse<any, any>
-    const cookieHeader = response.headers['set-cookie']
-    if (typeof cookieHeader === 'undefined') {
-        res.status(response.status).json(response.data)
-    } else {
-        res.setHeader('Set-Cookie', [...cookieHeader!])
-        res.status(response.status).json(response.data)
-    }
+    })
+        .then(resp => {
+            const cookieHeader = resp.headers['set-cookie']
+            if (typeof cookieHeader === 'undefined') {
+                res.status(resp.status).json(resp.data)
+            } else {
+                res.setHeader('Set-Cookie', [...cookieHeader!])
+                res.status(resp.status).json(resp.data)
+            }
+        })
+        .catch(err => {
+            res.status(err.response.status).json(err.response.data)
+        })
 }

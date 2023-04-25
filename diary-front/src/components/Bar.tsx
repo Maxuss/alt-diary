@@ -1,7 +1,9 @@
-import { Navbar, Spacer, Text, Link } from "@nextui-org/react"
+import { Navbar, Spacer, Text, Link, Button } from "@nextui-org/react"
 import ThemeSwitch from "./ThemeSwitch"
 import { useRouter } from "next/router"
 import React from "react"
+import { AcmeLogo } from "@/icons/AcmeLogo"
+import { AccountSection } from "./AccountSection"
 
 const items: { display: string, link: string }[] = [
     {
@@ -15,7 +17,7 @@ const items: { display: string, link: string }[] = [
     {
         display: "Задания",
         link: "/homework"
-    }
+    },
 ]
 
 export default function Bar() {
@@ -24,8 +26,9 @@ export default function Bar() {
     return <Navbar isBordered variant="sticky" disableShadow>
         <Navbar.Brand>
             <Navbar.Toggle aria-label="toggle navigation" showIn="xs" />
+            <AcmeLogo />
             <Spacer />
-            <Text b color="inherit">
+            <Text b color="inherit" hideIn="sm">
                 Дневник
             </Text>
         </Navbar.Brand>
@@ -38,6 +41,7 @@ export default function Bar() {
             ))}
         </Navbar.Content>
         <Navbar.Content>
+            <AccountSection />
             <Navbar.Item>
                 <ThemeSwitch />
             </Navbar.Item>

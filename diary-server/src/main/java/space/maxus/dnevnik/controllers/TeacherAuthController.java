@@ -30,10 +30,10 @@ public class TeacherAuthController {
     @SneakyThrows
     @PostMapping("/teacher/login")
     public QueryResponse<LoginResponse> login(HttpServletRequest request, HttpServletResponse response, @RequestBody @NotNull LoginRequest login) {
-        Teacher teacher = Auth.teacherFromEmail(login.getEmail()).orElseThrow(() -> new TeacherNotFoundException("Could not find teacher with email %s".formatted(login.getEmail())));
+        Teacher teacher = Auth.teacherFromEmail(login.getEmail()).orElseThrow(() -> new TeacherNotFoundException("Не удалось найти учителя с почтой %s".formatted(login.getEmail())));
         boolean hashAuthentic = Auth.verifyHash(teacher.getPassHash(), login.getPassword().toCharArray());
         if (!hashAuthentic)
-            return QueryResponse.failure("Incorrect password");
+            return QueryResponse.failure("Неверный пароль");
         return QueryResponse.success(new LoginResponse(Auth.persistAccess(response, Auth.genAccessToken(teacher)), Auth.persistRefresh(response, Auth.genRefreshToken(teacher)), teacher.getId(), new Date(System.currentTimeMillis() + Auth.STUDENT_EXPIRATION_TIME)));
     }
 
@@ -42,23 +42,23 @@ public class TeacherAuthController {
         return Auth.validateRegisterToken(register.getRegisterToken())
                 .map(email -> {
                     if (!email.equals(register.getEmail()))
-                        return QueryResponse.<LoginResponse>failure("Invalid email");
+                        return QueryResponse.<LoginResponse>failure("Неверный пароль");
                     Teacher newTeacher = new Teacher(register.getName(), register.getSurname(), register.getPatronymic(), register.getEmail(), Auth.hashPassword(register.getPassword().toCharArray()));
                     teacherService.insertUpdate(newTeacher);
                     return QueryResponse.success(new LoginResponse(Auth.persistAccess(response, Auth.genAccessToken(newTeacher)), Auth.persistRefresh(response, Auth.genRefreshToken(newTeacher)), newTeacher.getId(), new Date(System.currentTimeMillis() + Auth.STUDENT_EXPIRATION_TIME)));
                 })
-                .orElseGet(() -> QueryResponse.failure("Invalid register token"));
+                .orElseGet(() -> QueryResponse.failure("Неверный токен регистрации"));
     }
 
     @PostMapping("/teacher/refresh")
     @SneakyThrows
     public QueryResponse<RefreshResponse> refresh(HttpServletRequest request, HttpServletResponse response) {
-        Auth.JWTData jwt = Auth.verifyJwt(Auth.getRefreshToken(request).orElseThrow(() -> new JwtNotProvidedException("No refresh token provided")));
+        Auth.JWTData jwt = Auth.verifyJwt(Auth.getRefreshToken(request).orElseThrow(() -> new JwtNotProvidedException("Токен обновления не задан")));
         if (!jwt.isValid() || !jwt.isTeacher())
-            return QueryResponse.failure("Invalid refresh token");
+            return QueryResponse.failure("Неверный токен обновления");
         return teacherService.findById(jwt.getUid())
                 .map(teacher -> QueryResponse.success(new RefreshResponse(new Date(System.currentTimeMillis() + Auth.ACCESS_TOKEN_EXPIRATION_TIME), Auth.persistAccess(response, Auth.genAccessToken(teacher)), jwt.getUid())))
-                .orElseGet(() -> QueryResponse.failure("Could not find teacher"));
+                .orElseGet(() -> QueryResponse.failure("Не удалось найти учителя"));
     }
 
     @ExceptionHandler(TeacherNotFoundException.class)

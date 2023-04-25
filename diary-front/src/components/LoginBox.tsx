@@ -90,8 +90,7 @@ export const LoginBox: React.FC<LoginBoxProps> = (props) => {
                         props.onSend(emailInputRef.current.value, passwordInputRef.current.value).then(value => {
                             if (value === "success") {
                                 // everything fine
-                                router.replace("/student/login", "/schedule")
-                                router.reload();
+                                router.push("/schedule")
                             } else {
                                 // an error occurred
                                 setErrorState(value)

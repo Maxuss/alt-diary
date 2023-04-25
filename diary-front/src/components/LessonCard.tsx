@@ -5,14 +5,16 @@ import { RunIcon } from "@/icons/RunIcon";
 import { Lesson } from "@/types/lessons";
 
 export const LessonCard: React.FC<Lesson> = ({
-    id, beginTime, endTime, nextBreakDuration, subject, marks, homework
+    id, beginTime, endTime, subject, marks, homework
 }) => {
     const { theme } = useTheme()
 
-    const beginDateTime = new Date(Date.parse(beginTime))
-    const endDateTime = new Date(Date.parse(endTime))
-    const beginFmt = `${beginDateTime.getHours().toString().padStart(2, "0")}:${beginDateTime.getMinutes().toString().padStart(2, "0")}`;
-    const endFmt = `${endDateTime.getHours().toString().padStart(2, "0")}:${endDateTime.getMinutes().toString().padStart(2, "0")}`;
+    const beginDateTimeArr = beginTime.split(":")
+    beginDateTimeArr.pop()
+    const beginFmt = beginDateTimeArr.join(":")
+    const endDateTimeArr = endTime.split(":")
+    endDateTimeArr.pop()
+    const endFmt = endDateTimeArr.join(":")
 
     return (
         <>

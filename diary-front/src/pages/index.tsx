@@ -5,30 +5,30 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { post } from '@/api/core';
 import { refresh } from '@/api/auth';
+import axios from 'axios';
 
 export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    // TODO: refreshing
-    if (getCookie("refreshToken") === undefined) {
+    refresh().then(res => {
+      if (res === true) {
+        router.push("/schedule");
+      } else {
+        console.error(res);
+        router.push("/student/login");
+      }
+    }).catch(err => {
+      console.log(err)
       router.push("/student/login");
-      return;
-    } else {
-      router.push("/schedule");
-    }
-  }, [router]);
+    })
+  }, []);
 
   return (
     <Layout>
       <Text>
-        Redirecting you to schedule...
+        Перенаправляем на расписание...
       </Text>
     </Layout>
   );
-}
-
-function getCookie(key: string): string | undefined {
-  var b = document.cookie.match("(^|;)\\s*" + key + "\\s*=\\s*([^;]+)");
-  return b ? b.pop() : undefined;
 }
